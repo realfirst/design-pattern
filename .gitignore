@@ -1,0 +1,17 @@
+*.class
+*.sh
+*.py
+*.sql
+.directory
+# Package Files #
+*.jar
+*.war
+*.ear
+pom2prj.xml
+lib
+uml*
+doc
+reports
+target/*
+*.dot
+*.png

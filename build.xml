@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="design pattern" default="compile" basedir=".">
+  <description>
+    build file for design pattern
+  </description>
+  <!-- set global properties for this build -->
+  <property name="java.src" value="src/main/java"/>
+  <property name="test.src" value="src/test/java"/>
+  <property name="build.dir" value="target"/>
+  <property name="java.classes" value="${build.dir}/classes"/>
+  <property name="test.classes" value="${build.dir}/test-classes"/>
+  <property name="test.reports" value="${build.dir}/test-reports"/>
+  <property name="javadoc.dir" value="${basedir}/doc"/>
+
+  <target name="init">
+    <mkdir dir="${java.classes}"/>
+    <mkdir dir="${test.classes}"/>
+    <mkdir dir="${test.reports}"/>
+    <mkdir dir="${javadoc.dir}"/>
+  </target>
+
+  <target name="compile"  depends="init">
+    <javac srcdir="${java.src}" destdir="${java.classes}">
+      <include name="**/*.java"/>
+    </javac>
+  </target>
+
+  <!-- for strategy pattern -->
+  
+  <target name="compile-strategy" depends="init">
+    <javac srcdir="${java.src}" destdir="${java.classes}">
+      <include name="strategy/*.java"/>
+    </javac>
+  </target>
+
+  <target name="run-strategy" depends="compile-strategy">
+    <java classname="strategy.MiniDuckSimulator"
+          classpath="${java.classes}"/>
+  </target>
+  
+  <target name="clean-strategy">
+    <delete dir="${java.classes}/strategy"/>
+  </target>
+
+  <!-- for decorator pattern -->
+  <target name="compile-decorator" depends="init">
+    <javac srcdir="${java.src}/decorator" destdir="${java.classes}"
+           includeantruntime="false"/>
+  </target>
+
+  <target name="run-decorator-starbuzz" depends="compile-decorator">
+    <tstamp/>
+    <java classname="decorator.starbuzz.StarbuzzCoffee"
+          classpath="${java.classes}"/>
+  </target>
+
+  <target name="run-decorator-io" depends="compile-decorator">
+    <java classname="decotator.io.InputTest" classpath="${java.classes}"/>
+  </target>
+  
+  <target name="clean-decorator">
+    <delete dir="${java.classes}/decorator"/>
+  </target>
+
+  <target name="uml-decorator">
+       <property name="decorator.uml.dir" value="${basedir}/uml/decorator"/>
+       <mkdir dir="${decorator.uml.dir}"/>
+       <path id="uml.source.path">
+           <!-- <pathelement path="${src.uml.dir}/"/> -->
+           <!-- <pathelement path="${src.java.dir}"/> -->
+           <pathelement path="${java.src}"/>
+         </path>
+       <javadoc sourcepathref="uml.source.path" packagenames="decorator" package="true">
+           <doclet name="org.umlgraph.doclet.UmlGraph" path="${basedir}/lib/UmlGraph.jar">
+               <param name="-d" value="${decorator.uml.dir}"/>
+                        <param name="-all"/> 
+                        <param name="-constructors"/>
+           </doclet>
+       </javadoc>
+       <apply executable="dot" dest="${decorator.uml.dir}" parallel="false">
+         <arg value="-Tpng"/>
+         <arg value="-o"/>
+         <targetfile/>
+         <srcfile/>
+         <fileset dir="${decorator.uml.dir}" includes="*.dot"/>
+         <mapper type="glob" from="*.dot" to="*.png"/>
+       </apply>
+   </target>
+
+   <!-- for factory pattern -->
+   <target name="compile-simplefactory" depends="init">
+     <javac srcdir="${java.src}/factory/pizzas" destdir="${java.classes}"
+            includeantruntime="false"/>
+   </target>
+
+   <target name="run-simplefactory" depends="compile-simplefactory">
+     <java classname="factory.pizzas.PizzaTestDrive" classpath="${java.classes}"/>
+   </target>
+
+   <target name="clean-simplefactory">
+     <delete dir="${java.classes}/factory/pizzas"/>
+   </target>
+
+     <target name="uml-simplefactory">
+       <property name="simpleafactory.uml.dir" value="${basedir}/uml/factory/simplefactory"/>
+       <mkdir dir="${simpleafactory.uml.dir}"/>
+       <path id="uml.source.path">
+           <!-- <pathelement path="${src.uml.dir}/"/> -->
+           <!-- <pathelement path="${src.java.dir}"/> -->
+           <pathelement path="${java.src}"/>
+         </path>
+       <javadoc sourcepathref="uml.source.path"
+                packagenames="factory.pizzas"
+                package="true">
+           <doclet name="org.umlgraph.doclet.UmlGraph" path="${basedir}/lib/UmlGraph.jar">
+               <param name="-d" value="${decorator.uml.dir}"/>
+                        <param name="-all"/> 
+                        <param name="-constructors"/>
+           </doclet>
+       </javadoc>
+       <apply executable="dot" dest="${simpleafactory.uml.dir}" parallel="false">
+         <arg value="-Tpng"/>
+         <arg value="-o"/>
+         <targetfile/>
+         <srcfile/>
+         <fileset dir="${decorator.uml.dir}" includes="*.dot"/>
+         <mapper type="glob" from="*.dot" to="*.png"/>
+       </apply>
+   </target>
+
+     
+  <target name="uml" depends="compile-strategy">
+       <property name="uml.dir" value="${basedir}/uml"/>
+       <!-- <property name="src.uml.dir" value="${src.dir}/uml"/> -->
+       <mkdir dir="${uml.dir}"/>
+       <path id="uml.source.path">
+           <!-- <pathelement path="${src.uml.dir}/"/> -->
+           <!-- <pathelement path="${src.java.dir}"/> -->
+           <pathelement path="${java.src}"/>
+         </path>
+       <javadoc sourcepathref="uml.source.path" packagenames="*" package="true">
+           <doclet name="org.umlgraph.doclet.UmlGraph" path="${basedir}/lib/UmlGraph.jar">
+               <param name="-d" value="${uml.dir}"/>
+                        <param name="-all"/> 
+                        <param name="-constructors"/>
+           </doclet>
+       </javadoc>
+       <apply executable="dot" dest="${uml.dir}" parallel="false">
+         <arg value="-Tpng"/>
+         <arg value="-o"/>
+         <targetfile/>
+         <srcfile/>
+         <fileset dir="${uml.dir}" includes="*.dot"/>
+         <mapper type="glob" from="*.dot" to="*.png"/>
+       </apply>
+   </target>
+
+   <!-- for singleton pattern -->
+   <target name="compile-singleton" depends="init">
+     <javac srcdir="${java.src}/singleton" destdir="${java.classes}"
+            includeantruntime="false"/>
+   </target>
+
+   <target name="run-singleton-chocolate" depends="compile-singleton">
+     <java classname="singleton.chocolate.ChocolateController" classpath="${java.classes}"/>
+   </target>
+     
+   <target name="javadocs" depends="compile-strategy, init">
+	<javadoc sourcepath="${java.src}" packagenames="strategy.*" destdir="${javadoc.dir}" private="true">
+		<doclet name="org.umlgraph.doclet.UmlGraphDoc" path="${basedir}/lib/UmlGraph.jar">
+			<!-- <param name="-inferrel"/> -->
+			<!-- <param name="-inferdep"/> -->
+			<param name="-collapsible"/>
+			<!-- <param name="-hide" value="java.*"/> -->
+			<!-- <param name="-collpackages" value="java.util.*"/> -->
+			<!-- <param name="-qualify"/> -->
+			<!-- <param name="-postfixpackage"/> -->
+			<!-- <param name="-nodefontsize" value="9"/> -->
+			<!-- <param name="-nodefontpackagesize" value="7"/> -->
+			<!-- <param name="-link" value="http://java.sun.com/j2se/1.5.0/docs/guide/javadoc/doclet/spec"/> -->
+			<!-- <param name="-link" value="http://java.sun.com/j2se/1.5/docs/api"/> -->
+
+            <!-- <param name="-attributes"/> -->
+            <!-- <param name="-operations"/> -->
+            <!-- <param name="-qualify"/> -->
+            <!-- <param name="-types"/> -->
+            <!-- <param name="-visibility"/> -->
+
+            <param name="-all"/>
+            <param name="-constructors"/>
+		</doclet>
+	</javadoc>
+</target>
+
+   <target name="javadoc-apiviz" depends="compile-strategy, init">
+     <javadoc sourcepath="${java.src}" packagenames="strategy.*" destdir="${javadoc.dir}" 
+              private="true"
+              doclet="org.jboss.apiviz.APIviz"
+              docletpath="${basedir}/lib/apiviz-1.3.1.GA.jar"
+              classpath="${java.classes}/">
+     </javadoc>
+   </target>
+  
+</project>
